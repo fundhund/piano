@@ -1,0 +1,45 @@
+.pianoContainer {
+    display: flex;
+    flex-direction: row;
+
+    .key {
+        border-radius: 0 0 5px 5px;
+        font-size: 0.75em;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-bottom: 5px;
+        cursor: pointer;
+
+        
+        // &:not(:last-child) {
+            //     margin-right: 0px;
+            // }
+            
+        &.white {
+            border: 1px solid grey;
+            height: 100px;
+            width: 30px;
+
+            &:hover {
+                background-color: lightblue;
+            }
+        }
+
+        &.black {
+            border: 1px solid black;
+            background: black;
+            color: white;
+            height: 75px;
+            width: 20px;
+            margin: 0 -10px -10px;
+            z-index: 2;
+
+            &:hover {
+                background-color: lightblue;
+                border-color: lightblue;
+                color: black;
+            }
+        }
+    }
+}
