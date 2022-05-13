@@ -1,26 +1,26 @@
-import React, { FC } from 'react'
+import React, { Dispatch, FC, Key, SetStateAction } from 'react'
+import { KeyColor, KEYS } from '../../types/piano'
 import styles from './Piano.module.scss'
 
-type PianoProps = {
+export type PianoProps = {
     showNotes?: boolean
+    onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
 }
 
-type KeyColor = 'black' | 'white'
-
-const getKeyColor = (key: string): KeyColor => key.slice(0, key.length - 1).includes('#') ? 'black' : 'white'
+const getKeyColor = (key: Key & string): KeyColor => key.slice(0, key.length - 1).includes('#') ? 'black' : 'white'
 
 const Piano: FC<PianoProps> = ({
-    showNotes
+    showNotes,
+    onClick
 }) => {
-
-    const keys = ['C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3']
 
     return (
         <div className={styles.pianoContainer}>
-            {keys.map(key => (
+            {KEYS.map(key => (
                 <div 
                     className={`${styles.key} ${styles[getKeyColor(key)]}`}
                     key={key}
+                    onClick={() => onClick?.(key)}
                 >
                     {showNotes && key.slice(0, key.length - 1)}
                 </div>
