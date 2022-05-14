@@ -4,9 +4,12 @@ import { KEYS } from '../../utils/constants'
 import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
 
+export type HighlightKeys = {[key in Key]: 'red' | 'green'}
+
 export type PianoProps = {
     showNotes?: boolean
     onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
+    highlightKeys?: HighlightKeys
 }
 
 const Piano: FC<PianoProps> = ({
