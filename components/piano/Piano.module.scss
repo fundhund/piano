@@ -17,7 +17,7 @@
             height: 100px;
             min-width: 30px;
 
-            &:hover {
+            &:hover:not(.green):not(.red):not(.noHover) {
                 background-color: lightblue;
             }
         }
@@ -31,11 +31,23 @@
             margin: 0 -10px -10px;
             z-index: 2;
 
-            &:hover {
+            &:hover:not(.green):not(.red):not(.noHover) {
                 background-color: lightblue;
                 border-color: lightblue;
                 color: black;
             }
+        }
+
+        &.green {
+            border-color: green;
+            background: green;
+            color: black !important;
+        }
+
+        &.red {
+            border-color: red !important;
+            background: red !important;
+            color: black !important;
         }
     }
 }

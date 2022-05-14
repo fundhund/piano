@@ -7,55 +7,60 @@ import { getRandomKey } from '../utils/noteHelper'
 
 const PianoPage: NextPage = () => {
     
-    const [currentNote, setCurrentNote] = useState<Key | undefined>(undefined)
-    const [selectedNote, setSelectedNote] = useState<Key | undefined>(undefined)
+    const [currentKey, setCurrentKey] = useState<Key | undefined>(undefined)
+    const [selectedKey, setSelectedKey] = useState<Key | undefined>(undefined)
     const [noteDisplayColor, setNoteDisplayColor] = useState<NoteDisplayColor | undefined>(undefined)
     const [highlightKeys, setHighlightKeys] = useState<HighlightKeys | undefined>(undefined)
     const [waitForInput, setWaitForInput] = useState<boolean>(false)
 
     const handleNoteDisplayClick = () => {
-        if (waitForInput) {
-            console.log({
-                currentNote,
-                selectedNote,
-                match: selectedNote === currentNote,
-                waitForInput,
-            })
-        } else {
-            setCurrentNote(getRandomKey())
-            setSelectedNote(undefined)
+        if (!waitForInput) {
+            setCurrentKey(getRandomKey())
+            setSelectedKey(undefined)
+            console.log({highlightKeys})
+            setHighlightKeys(undefined)
             setWaitForInput(true)
         }
     }
 
-    const handleKeyClick = (key: Key) => {
-        if (waitForInput) {
-            setSelectedNote(key)
+    const handleKeyClick = (selectedKey: Key) => {
+        if (selectedKey && waitForInput) {
+            setSelectedKey(selectedKey) // remove?
+            // set note display color?
+            
+            setHighlightKeys(selectedKey === currentKey
+                ? {[currentKey]: 'green'}
+                : {
+                    [selectedKey]: 'red',
+                    [currentKey as string]: 'green',
+                })
+                
             setWaitForInput(false)
         }
     }
 
+    // TODO: Check if state is needed for selected note or handle key clicked is enough
     useEffect(() => {
-        setNoteDisplayColor(!selectedNote
+        setNoteDisplayColor(!selectedKey
             ? NOTE_DISPLAY_COLORS.GREY
-            : selectedNote === currentNote
+            : selectedKey === currentKey
                 ? NOTE_DISPLAY_COLORS.GREEN
                 : NOTE_DISPLAY_COLORS.RED
         )
-    }, [currentNote, selectedNote])
+    }, [currentKey, selectedKey])
     
     return (
         <div>
             <NoteDisplay
                 placeholder="Click to start"
-                note={currentNote}
+                note={currentKey}
                 color={noteDisplayColor}
                 onClick={handleNoteDisplayClick}
             />
             <Piano 
                 showNotes={false}
                 onClick={handleKeyClick}
-                // highlightKeys={}
+                highlightKeys={highlightKeys}
             />
         </div>
     )
