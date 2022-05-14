@@ -1,13 +1,13 @@
-import React, { Dispatch, FC, Key, SetStateAction } from 'react'
-import { KeyColor, KEYS } from '../../types/piano'
+import React, { Dispatch, FC, SetStateAction } from 'react'
+import { Key, KeyColor, Note } from '../../types/piano'
+import { KEYS } from '../../utils/constants'
+import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
 
 export type PianoProps = {
     showNotes?: boolean
     onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
 }
-
-const getKeyColor = (key: Key & string): KeyColor => key.slice(0, key.length - 1).includes('#') ? 'black' : 'white'
 
 const Piano: FC<PianoProps> = ({
     showNotes,
@@ -22,7 +22,7 @@ const Piano: FC<PianoProps> = ({
                     key={key}
                     onClick={() => onClick?.(key)}
                 >
-                    {showNotes && key.slice(0, key.length - 1)}
+                    {showNotes && getNoteFromKey(key)}
                 </div>
             ))}
         </div>

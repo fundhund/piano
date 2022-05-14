@@ -5,7 +5,7 @@ import { Key } from '../types/piano'
 
 const PianoPage: NextPage = () => {
     
-    const [currentNote, setCurrentNote] = useState<Key | null>(null)
+    const [currentNote, setCurrentNote] = useState<Key | undefined>(undefined)
     
     return (
         <div>

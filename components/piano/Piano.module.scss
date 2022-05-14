@@ -1,6 +1,7 @@
 .pianoContainer {
     display: flex;
     flex-direction: row;
+    margin: 20px 0;
 
     .key {
         border-radius: 0 0 5px 5px;
@@ -11,11 +12,6 @@
         padding-bottom: 5px;
         cursor: pointer;
 
-        
-        // &:not(:last-child) {
-            //     margin-right: 0px;
-            // }
-            
         &.white {
             border: 1px solid grey;
             height: 100px;
