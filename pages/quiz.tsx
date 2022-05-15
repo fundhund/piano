@@ -50,8 +50,6 @@ const PianoPage: NextPage = () => {
             : NOTE_DISPLAY_COLORS.RED
             )
             setWaitForInput(false)
-        } else if (selectedKey && !waitForInput){
-            resetQuiz()
         }
         prevSelectedKey.current = selectedKey
     }, [selectedKey])
