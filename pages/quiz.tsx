@@ -1,5 +1,5 @@
 import { NextPage } from 'next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import NoteDisplay, { NoteDisplayColor, NOTE_DISPLAY_COLORS } from '../components/noteDisplay/NoteDisplay'
 import Piano, { HighlightKeys } from '../components/piano/Piano'
 import { Key, Note } from '../types/piano'
@@ -13,42 +13,57 @@ const PianoPage: NextPage = () => {
     const [highlightKeys, setHighlightKeys] = useState<HighlightKeys | undefined>(undefined)
     const [waitForInput, setWaitForInput] = useState<boolean>(false)
 
+    const prevSelectedKey = useRef<any>()
+
     const handleNoteDisplayClick = () => {
         if (!waitForInput) {
-            setCurrentKey(getRandomKey())
-            setSelectedKey(undefined)
-            console.log({highlightKeys})
-            setHighlightKeys(undefined)
-            setWaitForInput(true)
+            resetQuiz()
         }
     }
 
-    const handleKeyClick = (selectedKey: Key) => {
-        console.log({selectedKey})
+    const resetQuiz = () => {
+        setCurrentKey(getRandomKey())
+        setSelectedKey(undefined)
+        setHighlightKeys(undefined)
+        setWaitForInput(true)
+        setNoteDisplayColor(NOTE_DISPLAY_COLORS.GREY)
+    }
+
+    useEffect(() => {
+        console.log({
+            waitForInput,
+            selectedKey,
+            currentKey,
+        })
+        if (prevSelectedKey.current === selectedKey) return
         if (selectedKey && waitForInput) {
-            setSelectedKey(selectedKey) // remove?
-            // set note display color?
-            
             setHighlightKeys(selectedKey === currentKey
                 ? {[currentKey]: 'green'}
                 : {
                     [selectedKey]: 'red',
                     [currentKey as string]: 'green',
                 })
-                
-            setWaitForInput(false)
-        }
-    }
-
-    // TODO: Check if state is needed for selected note or handle key clicked is enough
-    useEffect(() => {
-        setNoteDisplayColor(!selectedKey
+            setNoteDisplayColor(!selectedKey
             ? NOTE_DISPLAY_COLORS.GREY
             : selectedKey === currentKey
-                ? NOTE_DISPLAY_COLORS.GREEN
-                : NOTE_DISPLAY_COLORS.RED
-        )
-    }, [currentKey, selectedKey])
+            ? NOTE_DISPLAY_COLORS.GREEN
+            : NOTE_DISPLAY_COLORS.RED
+            )
+            setWaitForInput(false)
+        } else if (selectedKey && !waitForInput){
+            resetQuiz()
+        }
+        prevSelectedKey.current = selectedKey
+    }, [selectedKey])
+
+    useEffect(() => {
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === ' ') {
+                e.preventDefault()
+                resetQuiz()
+            }
+        })
+    }, [])
     
     return (
         <div>
@@ -60,7 +75,7 @@ const PianoPage: NextPage = () => {
             />
             <Piano 
                 showNotes={false}
-                onClick={handleKeyClick}
+                onClick={setSelectedKey}
                 highlightKeys={highlightKeys}
             />
         </div>

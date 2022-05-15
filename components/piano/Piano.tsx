@@ -43,9 +43,6 @@ const Piano: FC<PianoProps> = ({
             console.log('Could not access your MIDI devices.');
         }
     }, [])
-    // if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-        
-    // }
 
     return (
         <div className={styles.pianoContainer}>
