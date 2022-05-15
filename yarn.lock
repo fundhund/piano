@@ -139,6 +139,11 @@
   "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
   "version" "0.16.2"
 
+"@types/webmidi@^2.0.6":
+  "integrity" "sha512-sfS0A5IryqmBrUpcGPipEPeFdpqmZzP6b6lZFxHKgz5n2Vhzh4yJ5P2TvoDUhDjqJyv0Y25ng0Qodgo2Vu08ug=="
+  "resolved" "https://registry.npmjs.org/@types/webmidi/-/webmidi-2.0.6.tgz"
+  "version" "2.0.6"
+
 "@typescript-eslint/parser@^5.0.0":
   "integrity" "sha512-V06cYUkqcGqpFjb8ttVgzNF53tgbB/KoQT/iB++DOIExKmzI9vBJKjZKt/6FuV9c+zrDsvJKbJ2DOCYwX91cbw=="
   "resolved" "https://registry.npmjs.org/@typescript-eslint/parser/-/parser-5.23.0.tgz"

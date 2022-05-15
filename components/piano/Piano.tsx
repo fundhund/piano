@@ -1,7 +1,8 @@
-import React, { Dispatch, FC, SetStateAction } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
 import { Key } from '../../types/piano'
 import { joinClassNames } from '../../utils/componentHelper'
 import { KEYS } from '../../utils/constants'
+import { getKeyFromMidiCode } from '../../utils/midiHelper'
 import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
 
@@ -18,6 +19,33 @@ const Piano: FC<PianoProps> = ({
     onClick,
     highlightKeys,
 }) => {
+
+    useEffect(() => {
+        navigator.requestMIDIAccess()
+            .then(onMIDISuccess, onMIDIFailure)
+
+        function onMIDISuccess(midiAccess: any) {
+            for (const input of midiAccess.inputs.values()) {
+                input.onmidimessage = getMIDIMessage;
+            }
+        }
+
+        function getMIDIMessage({ data }: any) {
+            if (data.length < 2) return
+            const [command, note] = data
+            if (command === 144) {
+                const key = getKeyFromMidiCode(note)
+                onClick?.(key)
+            }
+        }
+
+        function onMIDIFailure() {
+            console.log('Could not access your MIDI devices.');
+        }
+    }, [])
+    // if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
+        
+    // }
 
     return (
         <div className={styles.pianoContainer}>

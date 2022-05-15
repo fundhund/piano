@@ -24,6 +24,7 @@ const PianoPage: NextPage = () => {
     }
 
     const handleKeyClick = (selectedKey: Key) => {
+        console.log({selectedKey})
         if (selectedKey && waitForInput) {
             setSelectedKey(selectedKey) // remove?
             // set note display color?
