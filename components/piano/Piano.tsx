@@ -6,7 +6,7 @@ import { getKeyFromMidiCode } from '../../utils/midiHelper'
 import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
 
-export type HighlightKeys = {[key: string]: 'green' | 'red'}
+export type HighlightKeys = {[key: string]: 'green' | 'red' | 'blue'}
 
 export type PianoProps = {
     showNotes?: boolean
