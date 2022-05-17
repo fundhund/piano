@@ -14,34 +14,35 @@ export type PianoProps = {
     highlightKeys?: HighlightKeys
 }
 
+
+
 const Piano: FC<PianoProps> = ({
     showNotes,
     onClick,
     highlightKeys,
 }) => {
 
+    const onMIDISuccess = (midiAccess: WebMidi.MIDIAccess) => {
+        Array.from(midiAccess?.inputs?.values())
+            .forEach(input => input.onmidimessage = getMIDIMessage)
+    }
+    
+    const getMIDIMessage = ({ data }: any) => {
+        if (data.length < 2) return
+        const [command, note] = data
+        if (command === 144) {
+            const key = getKeyFromMidiCode(note)
+            onClick?.(key)
+        }
+    }
+
+    const onMIDIFailure = () => {
+        console.error('Could not access your MIDI devices.');
+    }
+
     useEffect(() => {
         navigator.requestMIDIAccess?.()
             .then(onMIDISuccess, onMIDIFailure)
-
-        function onMIDISuccess(midiAccess: any) {
-            for (const input of midiAccess.inputs.values()) {
-                input.onmidimessage = getMIDIMessage;
-            }
-        }
-
-        function getMIDIMessage({ data }: any) {
-            if (data.length < 2) return
-            const [command, note] = data
-            if (command === 144) {
-                const key = getKeyFromMidiCode(note)
-                onClick?.(key)
-            }
-        }
-
-        function onMIDIFailure() {
-            console.log('Could not access your MIDI devices.');
-        }
     }, [])
 
     return (
