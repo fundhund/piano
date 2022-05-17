@@ -12,6 +12,7 @@ export type PianoProps = {
     showNotes?: boolean
     onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
     highlightKeys?: HighlightKeys
+    enablePolyphony?: boolean
 }
 
 
@@ -20,6 +21,7 @@ const Piano: FC<PianoProps> = ({
     showNotes,
     onClick,
     highlightKeys,
+    enablePolyphony,
 }) => {
 
     const onMIDISuccess = (midiAccess: WebMidi.MIDIAccess) => {

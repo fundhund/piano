@@ -75,6 +75,7 @@ const PianoPage: NextPage = () => {
                 showNotes={false}
                 onClick={setSelectedKey}
                 highlightKeys={highlightKeys}
+                enablePolyphony={false}
             />
         </div>
     )
