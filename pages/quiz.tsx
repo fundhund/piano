@@ -8,7 +8,7 @@ import { getRandomKey } from '../utils/noteHelper'
 const PianoPage: NextPage = () => {
     
     const [currentKey, setCurrentKey] = useState<Key | undefined>(undefined)
-    const [selectedKey, setSelectedKey] = useState<Key | undefined>(undefined)
+    const [selectedKeys, setSelectedKeys] = useState<Key[]>([])
     const [noteDisplayColor, setNoteDisplayColor] = useState<NoteDisplayColor | undefined>(undefined)
     const [highlightKeys, setHighlightKeys] = useState<HighlightKeys | undefined>(undefined)
     const [waitForInput, setWaitForInput] = useState<boolean>(false)
@@ -23,18 +23,14 @@ const PianoPage: NextPage = () => {
 
     const resetQuiz = () => {
         setCurrentKey(getRandomKey())
-        setSelectedKey(undefined)
+        setSelectedKeys([])
         setHighlightKeys(undefined)
         setWaitForInput(true)
         setNoteDisplayColor(NOTE_DISPLAY_COLORS.GREY)
     }
 
     useEffect(() => {
-        console.log({
-            waitForInput,
-            selectedKey,
-            currentKey,
-        })
+        const [selectedKey] = selectedKeys
         if (prevSelectedKey.current === selectedKey) return
         if (selectedKey && waitForInput) {
             setHighlightKeys(selectedKey === currentKey
@@ -43,16 +39,16 @@ const PianoPage: NextPage = () => {
                     [selectedKey]: 'red',
                     [currentKey as string]: 'green',
                 })
-            setNoteDisplayColor(!selectedKey
+            setNoteDisplayColor(!selectedKeys
             ? NOTE_DISPLAY_COLORS.GREY
             : selectedKey === currentKey
-            ? NOTE_DISPLAY_COLORS.GREEN
-            : NOTE_DISPLAY_COLORS.RED
+                ? NOTE_DISPLAY_COLORS.GREEN
+                : NOTE_DISPLAY_COLORS.RED
             )
             setWaitForInput(false)
         }
         prevSelectedKey.current = selectedKey
-    }, [selectedKey])
+    }, [selectedKeys])
 
     useEffect(() => {
         document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -73,8 +69,9 @@ const PianoPage: NextPage = () => {
             />
             <Piano 
                 showNotes={false}
-                onClick={setSelectedKey}
+                onClick={setSelectedKeys}
                 highlightKeys={highlightKeys}
+                enablePolyphony={false}
             />
         </div>
     )

@@ -1,8 +1,8 @@
-import React, { Dispatch, FC, SetStateAction, useEffect } from 'react'
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { Key } from '../../types/piano'
 import { joinClassNames } from '../../utils/componentHelper'
 import { KEYS } from '../../utils/constants'
-import { getKeyFromMidiCode } from '../../utils/midiHelper'
+import { getKeyFromMidiCode, MIDI_COMMANDS } from '../../utils/midiHelper'
 import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
 
@@ -12,15 +12,16 @@ export type PianoProps = {
     showNotes?: boolean
     onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
     highlightKeys?: HighlightKeys
+    enablePolyphony?: boolean
 }
-
-
 
 const Piano: FC<PianoProps> = ({
     showNotes,
     onClick,
     highlightKeys,
+    enablePolyphony,
 }) => {
+    const [keys, setKeys] = useState<Key[]>([])
 
     const onMIDISuccess = (midiAccess: WebMidi.MIDIAccess) => {
         Array.from(midiAccess?.inputs?.values())
@@ -29,10 +30,27 @@ const Piano: FC<PianoProps> = ({
     
     const getMIDIMessage = ({ data }: any) => {
         if (data.length < 2) return
-        const [command, note] = data
-        if (command === 144) {
-            const key = getKeyFromMidiCode(note)
-            onClick?.(key)
+        
+        const [command, note, velocity] = data
+        const key = getKeyFromMidiCode(note)
+
+        if (!enablePolyphony && command === MIDI_COMMANDS.NOTE_ON) {
+            onClick?.([key])
+        }
+
+        if (enablePolyphony && [MIDI_COMMANDS.NOTE_OFF, MIDI_COMMANDS.NOTE_ON].includes(command)) {
+            // console.log({data})
+            // onClick?.([key])
+            console.log({
+                key,
+                velocity,
+                command,
+            })
+            if (command === MIDI_COMMANDS.NOTE_ON && velocity > 0) {
+                setKeys(keys => Array.from(new Set([...keys, key])))
+            } else {
+                setKeys(keys => keys.filter(k => k !== key))
+            }
         }
     }
 
@@ -45,6 +63,12 @@ const Piano: FC<PianoProps> = ({
             .then(onMIDISuccess, onMIDIFailure)
     }, [])
 
+    useEffect(() => {
+        if (enablePolyphony) {
+            onClick?.(keys)
+        }
+    }, [keys])
+
     return (
         <div className={styles.pianoContainer}>
             {KEYS.map(key => (
@@ -56,7 +80,7 @@ const Piano: FC<PianoProps> = ({
                         highlightKeys && key in highlightKeys && styles[highlightKeys[key]]
                     )}
                     key={key}
-                    onClick={() => onClick?.(key)}
+                    onClick={() => onClick?.([key])}
                 >
                     {showNotes && getNoteFromKey(key)}
                 </div>
