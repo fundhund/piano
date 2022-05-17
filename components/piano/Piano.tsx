@@ -21,7 +21,7 @@ const Piano: FC<PianoProps> = ({
 }) => {
 
     useEffect(() => {
-        navigator.requestMIDIAccess()
+        navigator.requestMIDIAccess?.()
             .then(onMIDISuccess, onMIDIFailure)
 
         function onMIDISuccess(midiAccess: any) {
