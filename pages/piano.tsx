@@ -5,23 +5,26 @@ import { Key } from '../types/piano'
 
 const PianoPage: NextPage = () => {
     
-    const [currentNote, setCurrentNote] = useState<Key | undefined>(undefined)
+    const [currentKeys, setCurrentKeys] = useState<Key[]>([])
     const [highlightKeys, setHighlightKeys] = useState<HighlightKeys | undefined>(undefined)
 
     useEffect(() => {
-        setHighlightKeys({[currentNote as string]: 'blue'})
-    }, [currentNote])
+        setHighlightKeys(currentKeys.reduce((acc, curr) => ({
+            ...acc,
+            [curr]: 'blue',
+        }), {}))
+    }, [currentKeys])
     
     return (
         <div>
             <Piano 
                 showNotes={false}
-                onClick={setCurrentNote}
+                onClick={setCurrentKeys}
                 highlightKeys={highlightKeys}
                 enablePolyphony={true}
             />
             <div>
-                <h1>{currentNote}</h1>
+                <h1>{currentKeys.join('   ')}</h1>
             </div>
         </div>
     )
