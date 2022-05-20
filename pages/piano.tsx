@@ -1,6 +1,7 @@
 import { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import Piano, { HighlightKeys } from '../components/piano/Piano'
+import Staff from '../components/staff/Staff'
 import { Key } from '../types/piano'
 
 const PianoPage: NextPage = () => {
@@ -17,6 +18,7 @@ const PianoPage: NextPage = () => {
     
     return (
         <div>
+            <Staff clef="treble" />
             <Piano 
                 showNotes={false}
                 onClick={setCurrentKeys}
