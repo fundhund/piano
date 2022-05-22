@@ -1,0 +1,44 @@
+.staff {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+
+    .space {
+        background-color: white;
+        height: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: lightblue;
+        }
+    }
+
+    .line {
+        background-color: black;
+        border-top: 4px solid white;
+        border-bottom: 4px solid white;
+        color: white;
+        height: 10px;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        &:hover {
+            background-color: lightblue;
+        }
+    }
+
+    .ledgerLine {
+        background-color: white;
+        border-top: 4px solid white;
+        border-bottom: 4px solid white;
+        color: white;
+        height: 10px;
+        box-sizing: border-box;
+        cursor: pointer;
+
+        &:hover {
+            background-color: grey;
+        }
+    }
+}
