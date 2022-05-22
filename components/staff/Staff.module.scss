@@ -1,13 +1,22 @@
 .staff {
     display: flex;
     flex-direction: column;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
+
+    .note {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
 
     .space {
         background-color: white;
         height: 5px;
         cursor: pointer;
+        
+        & > div {
+            position: relative;
+            top: -50%;
+        }
 
         &:hover {
             background-color: lightblue;
@@ -22,6 +31,11 @@
         height: 10px;
         box-sizing: border-box;
         cursor: pointer;
+        
+        & > div {
+            position: relative;
+            top: calc(-50% - 3px);
+        }
 
         &:hover {
             background-color: lightblue;
@@ -36,6 +50,11 @@
         height: 10px;
         box-sizing: border-box;
         cursor: pointer;
+        
+        & > div {
+            position: relative;
+            top: calc(-50% - 3px);
+        }
 
         &:hover {
             background-color: grey;

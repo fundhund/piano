@@ -1,0 +1,20 @@
+$size_note: 10px;
+$size_hole: 6px;
+
+.wholeNote {
+    background-color: black;
+    border-radius: 50%;
+    height: $size_note;
+    width: $size_note * 1.5;
+    z-index: 2;
+
+    & > div {
+        height: $size_hole * 1.25;
+        width: $size_hole;
+        background-color: white;
+        border-radius: 50%;
+        position: relative;
+        left: calc(50% - $size_hole / 2);
+        top: calc(50% - $size_hole / 2);
+    }
+}
