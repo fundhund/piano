@@ -39,8 +39,6 @@ const Piano: FC<PianoProps> = ({
         }
 
         if (enablePolyphony && [MIDI_COMMANDS.NOTE_OFF, MIDI_COMMANDS.NOTE_ON].includes(command)) {
-            // console.log({data})
-            // onClick?.([key])
             console.log({
                 key,
                 velocity,
@@ -81,6 +79,7 @@ const Piano: FC<PianoProps> = ({
                     )}
                     key={key}
                     onClick={() => onClick?.([key])}
+                    // onMouseEnter={e => console.log(key)}
                 >
                     {showNotes && getNoteFromKey(key)}
                 </div>

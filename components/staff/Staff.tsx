@@ -18,8 +18,8 @@ const CLEFS = {
 } as const
 
 const CLEF_INTERVALS = {
-    [CLEFS.BASS]: ['C2', 'C4'],
-    [CLEFS.TREBLE]: ['C4', 'C6'],
+    [CLEFS.BASS]: ['A0', 'C4'],
+    [CLEFS.TREBLE]: ['C4', 'C8'],
 } as const
 
 const POSITIONS = {
