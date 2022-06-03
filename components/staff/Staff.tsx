@@ -9,7 +9,8 @@ import WholeNote from './WholeNote'
 
 type StaffProps = {
     clef: Clef
-    highlightKeys: HighlightKeys
+    isInteractive?: boolean
+    highlightKeys?: HighlightKeys
 }
 
 const getStaffNotes = (clef: Clef) =>
@@ -26,6 +27,7 @@ const getPositionStyle = (key: Key) => styles[String(getPosition(key))]
 
 const Staff: FC<StaffProps> = ({
     clef,
+    isInteractive = false,
     highlightKeys,
 }) => {
     const staffNotes = getStaffNotes(clef)
@@ -33,15 +35,33 @@ const Staff: FC<StaffProps> = ({
     const [focussedNote, setFocussedNote] = useState<Key | null>(null)
     const [selectedNote, setSelectedNote] = useState<Key | null>(null)
 
+    const getMouseEvents = (note: Key) => isInteractive 
+        ? {
+            onMouseEnter: () => { setFocussedNote(note) },
+            onMouseLeave: () => { setFocussedNote(null) },
+        }
+        : null
+
     return (
-        <div className={styles.staff}>
+        <div
+            className={styles.staff}
+            onWheel={e => {
+                if (focussedNote && !selectedNote) {
+                    const currentIndex = staffNotes.findIndex(note => note === focussedNote)
+                    const newIndex = currentIndex + e.deltaY / 100
+
+                    if (newIndex >= 0 && newIndex < staffNotes.length) {
+                        setFocussedNote(staffNotes[newIndex])
+                    }
+                }
+            }}
+        >
             { staffNotes
                 .map(note => (
                     <div 
                         key={note} 
                         className={joinClassNames(getPositionStyle(note), styles.note)}
-                        onMouseEnter={() => {setFocussedNote(note)}}
-                        onMouseLeave={() => {setFocussedNote(null)}}
+                        { ...getMouseEvents(note) }
                     >
                         <WholeNote
                             isDisplayed={[selectedNote, focussedNote].includes(note)}

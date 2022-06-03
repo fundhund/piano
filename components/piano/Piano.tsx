@@ -1,4 +1,4 @@
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
+import React, { Dispatch, FC, HTMLAttributes, MouseEventHandler, SetStateAction, useEffect, useState } from 'react'
 import { HighlightKeys, Key } from '../../types/piano'
 import { joinClassNames } from '../../utils/componentHelper'
 import { KEYS } from '../../utils/constants'
@@ -11,6 +11,7 @@ export type PianoProps = {
     onClick?: ((...args: Key[]) => void) | Dispatch<SetStateAction<any>>
     highlightKeys?: HighlightKeys
     enablePolyphony?: boolean
+    [key: string]: any
 }
 
 const Piano: FC<PianoProps> = ({
@@ -18,6 +19,7 @@ const Piano: FC<PianoProps> = ({
     onClick,
     highlightKeys,
     enablePolyphony,
+    ...rest
 }) => {
     const [keys, setKeys] = useState<Key[]>([])
 
@@ -66,7 +68,10 @@ const Piano: FC<PianoProps> = ({
     }, [keys])
 
     return (
-        <div className={styles.pianoContainer}>
+        <div
+            className={styles.pianoContainer}
+            {...rest}    
+        >
             {KEYS.map(key => (
                 <div 
                     className={joinClassNames(
