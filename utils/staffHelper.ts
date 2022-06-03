@@ -16,5 +16,7 @@ export const isSharp = (note?: Key | null) => (note && note.includes('#')) ?? fa
 
 export const withoutSharp = (note?: Key | null) => note && note.replace('#', '')
 
+export const withSharp = (note: Key) => note && note.replace(/(\w)(\d)/, (_, n, o) => `${n}#${o}`)
+
 export const getPosition = (key: Key) =>
     Object.values(POSITIONS).find((position: Position) => NOTES_BY_POSITION[position].includes(key))

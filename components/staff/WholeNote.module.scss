@@ -6,6 +6,7 @@ $size_hole: 6px;
     height: $size_note;
     width: $size_note * 1.5;
     z-index: 2;
+    color: black;
 
     &.sharp::after {
         content: '#';

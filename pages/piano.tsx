@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState, WheelEventHandler } from 'react'
 import Piano from '../components/piano/Piano'
 import Staff from '../components/staff/Staff'
 import { HighlightKeys, Key } from '../types/piano'
-import { KEYS } from '../utils/constants'
+import { KEYS, STAFF_NOTE_COLORS } from '../utils/constants'
 
 const PianoPage: NextPage = () => {
     

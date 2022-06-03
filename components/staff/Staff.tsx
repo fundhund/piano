@@ -3,7 +3,14 @@ import { Key } from '../../types/piano'
 import { Clef, HighlightKeys } from '../../types/staff'
 import { joinClassNames } from '../../utils/componentHelper'
 import { STAFF_NOTE_COLORS } from '../../utils/constants'
-import { getAllNotesInClef, getPosition, getStaffNotes, isSharp, withoutSharp } from '../../utils/staffHelper'
+import {
+    getAllNotesInClef,
+    getPosition,
+    getStaffNotes,
+    isSharp,
+    withoutSharp,
+    withSharp
+} from '../../utils/staffHelper'
 import styles from './Staff.module.scss'
 import WholeNote from './WholeNote'
 
@@ -22,9 +29,28 @@ const Staff: FC<StaffProps> = ({
 }) => {
     const allNotesInClef = getAllNotesInClef(clef)
     const staffNotes = getStaffNotes(clef)
-
+    
     const [focussedNote, setFocussedNote] = useState<Key | null>(null)
     const [selectedNote, setSelectedNote] = useState<Key | null>(null)
+
+    const getHighlightColor = (note: Key) => {
+        const result = !!highlightKeys
+            && (note in highlightKeys || withSharp(note) in highlightKeys)
+            && (highlightKeys[note] || highlightKeys[withSharp(note)])
+        return result
+    }
+    
+    const getColor = (note: Key) => getHighlightColor(note)
+        || (note === withoutSharp(selectedNote)
+            ?  STAFF_NOTE_COLORS.BLACK
+            :  STAFF_NOTE_COLORS.GRAY
+        )
+
+    const isDisplayed = (note: Key) => !!getHighlightColor(note) 
+        || !highlightKeys && (selectedNote
+            ? withoutSharp(selectedNote) === note
+            : withoutSharp(focussedNote) === note
+        )
 
     const getMouseEvents = (note: Key) => isInteractive 
         ? {
@@ -33,13 +59,17 @@ const Staff: FC<StaffProps> = ({
         }
         : null
 
+    const isDisplayedAsSharp = (note: Key) => isSharp(focussedNote)
+        || isSharp(selectedNote)
+        || !!highlightKeys && withSharp(note) in highlightKeys
+
     useEffect(() => {console.log({focussedNote, selectedNote})}, [focussedNote])
 
     return (
         <div
             className={styles.staff}
             onWheel={e => {
-                if (focussedNote && !selectedNote) {
+                if (!highlightKeys && focussedNote && !selectedNote) {
                     const currentIndex = allNotesInClef.findIndex(note => note === focussedNote)
                     const newIndex = currentIndex + e.deltaY / 100
 
@@ -49,27 +79,22 @@ const Staff: FC<StaffProps> = ({
                 }
             }}
             onClick={() => {
-                setSelectedNote(focussedNote)
+                !highlightKeys && !selectedNote && setSelectedNote(focussedNote)
             }}
         >
             { staffNotes
                 .map(note => (
                     <div 
-                        key={note} 
+                        key={note}
+                        id={`staff_${clef}_${note}`}
                         className={joinClassNames(getPositionStyle(note), styles.note)}
                         { ...getMouseEvents(note) }
                     >
                         <WholeNote
-                            isDisplayed={selectedNote
-                                ? withoutSharp(selectedNote) === note
-                                : withoutSharp(focussedNote) === note
-                            }
-                            color={(highlightKeys && note in highlightKeys && highlightKeys[note]) 
-                                || note === withoutSharp(selectedNote)
-                                    ?  STAFF_NOTE_COLORS.BLACK
-                                    :  STAFF_NOTE_COLORS.GRAY
-                            }
-                            isSharp={isSharp(focussedNote) || isSharp(selectedNote)}
+                            note={note}
+                            isDisplayed={isDisplayed(note)}
+                            color={getColor(note)}
+                            isSharp={isDisplayedAsSharp(note)}
                         />
                     </div>
                 ))
