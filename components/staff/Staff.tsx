@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC, useEffect, useRef, useState } from 'react'
 import { Key } from '../../types/piano'
 import { Clef, HighlightKeys } from '../../types/staff'
 import { joinClassNames } from '../../utils/componentHelper'
@@ -33,6 +33,8 @@ const Staff: FC<StaffProps> = ({
     const [focussedNote, setFocussedNote] = useState<Key | null>(null)
     const [selectedNote, setSelectedNote] = useState<Key | null>(null)
 
+    const ref = useRef<HTMLDivElement>(null)
+
     const getHighlightColor = (note: Key) => {
         const result = !!highlightKeys
             && (note in highlightKeys || withSharp(note) in highlightKeys)
@@ -52,7 +54,7 @@ const Staff: FC<StaffProps> = ({
             : withoutSharp(focussedNote) === note
         )
 
-    const getMouseEvents = (note: Key) => isInteractive 
+    const getMouseEvents = (note: Key) => isInteractive && !highlightKeys && !selectedNote
         ? {
             onMouseEnter: () => { setFocussedNote(note) },
             onMouseLeave: () => { setFocussedNote(null) },
@@ -63,23 +65,48 @@ const Staff: FC<StaffProps> = ({
         || isSharp(selectedNote)
         || !!highlightKeys && withSharp(note) in highlightKeys
 
-    useEffect(() => {console.log({focussedNote, selectedNote})}, [focussedNote])
+    const changeNote = (step: number) => {
+        if (!highlightKeys && focussedNote && !selectedNote) {
+        const currentIndex = allNotesInClef.findIndex(note => note === focussedNote)
+        const newIndex = currentIndex + step
+
+            if (newIndex >= 0 && newIndex < allNotesInClef.length) {
+                setFocussedNote(allNotesInClef[newIndex])
+            }
+        }
+    }
+
+    const selectNote = () => !highlightKeys && !selectedNote && setSelectedNote(focussedNote)
 
     return (
         <div
+            tabIndex={0}
+            ref={ref}
             className={styles.staff}
             onWheel={e => {
-                if (!highlightKeys && focussedNote && !selectedNote) {
-                    const currentIndex = allNotesInClef.findIndex(note => note === focussedNote)
-                    const newIndex = currentIndex + e.deltaY / 100
-
-                    if (newIndex >= 0 && newIndex < allNotesInClef.length) {
-                        setFocussedNote(allNotesInClef[newIndex])
-                    }
-                }
+                changeNote(Math.round(e.deltaY / 100))
             }}
             onClick={() => {
-                !highlightKeys && !selectedNote && setSelectedNote(focussedNote)
+                selectNote()
+            }}
+            onKeyDown={e => {
+                e.preventDefault()
+                switch (e.key) {
+                    case 'ArrowUp':
+                        changeNote(-1)
+                        break
+                    case 'ArrowDown':
+                        changeNote(1)
+                        break
+                    case 'Enter':
+                        selectNote()
+                        break
+                    default:
+                        return
+                }
+            }}
+            onMouseEnter={e => {
+                ref.current?.focus()
             }}
         >
             { staffNotes
