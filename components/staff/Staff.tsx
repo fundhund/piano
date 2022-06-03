@@ -1,42 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC, useState } from 'react'
 import { Key } from '../../types/piano'
+import { Clef, HighlightKeys, Position } from '../../types/staff'
 import { getReversedArray, getSubArray } from '../../utils/arrayHelper'
 import { joinClassNames } from '../../utils/componentHelper'
-import { KEYS } from '../../utils/constants'
+import { CLEF_INTERVALS, KEYS, NOTES_BY_POSITION, POSITIONS, STAFF_NOTE_COLORS } from '../../utils/constants'
 import styles from './Staff.module.scss'
 import WholeNote from './WholeNote'
 
-type Clef = typeof CLEFS[keyof typeof CLEFS]
-
-type Position = typeof POSITIONS[keyof typeof POSITIONS]
-
 type StaffProps = {
     clef: Clef
+    highlightKeys: HighlightKeys
 }
-
-const CLEFS = {
-    TREBLE: 'treble',
-    BASS: 'bass',
-} as const
-
-const CLEF_INTERVALS = {
-    [CLEFS.BASS]: ['A0', 'C4'],
-    [CLEFS.TREBLE]: ['C4', 'C8'],
-} as const
-
-const POSITIONS = {
-    SPACE: 'space',
-    LINE: 'line',
-    LEDGER_LINE: 'ledgerLine'
-} as const
-
-const NOTES_BY_POSITION = {
-    [POSITIONS.SPACE]: [
-        'D2', 'F2', 'A2', 'C3', 'E3', 'G3', 'B3', 'D4', 'F4', 'A4', 
-        'C5', 'E5', 'G5', 'B5', 'D6', 'F6', 'A6', 'C7', 'E7', 'G7', 'B7'] as Key[],
-    [POSITIONS.LINE]: ['G2', 'H2', 'D3', 'F3', 'A3', 'E4', 'G4', 'B4', 'D5', 'F5'] as Key[],
-    [POSITIONS.LEDGER_LINE]: ['C2', 'E2', 'C4', 'A5', 'C6', 'E6', 'G6', 'B6', 'D7', 'F7', 'A7', 'C8'] as Key[],
-} as const
 
 const getStaffNotes = (clef: Clef) =>
     getReversedArray(
@@ -50,9 +24,14 @@ const getPosition = (key: Key) =>
 
 const getPositionStyle = (key: Key) => styles[String(getPosition(key))]
 
-const Staff: FC<StaffProps> = ({clef}) => {
-
+const Staff: FC<StaffProps> = ({
+    clef,
+    highlightKeys,
+}) => {
     const staffNotes = getStaffNotes(clef)
+
+    const [focussedNote, setFocussedNote] = useState<Key | null>(null)
+    const [selectedNote, setSelectedNote] = useState<Key | null>(null)
 
     return (
         <div className={styles.staff}>
@@ -61,8 +40,14 @@ const Staff: FC<StaffProps> = ({clef}) => {
                     <div 
                         key={note} 
                         className={joinClassNames(getPositionStyle(note), styles.note)}
+                        onMouseEnter={() => {setFocussedNote(note)}}
+                        onMouseLeave={() => {setFocussedNote(null)}}
                     >
-                        <WholeNote />
+                        <WholeNote
+                            isDisplayed={[selectedNote, focussedNote].includes(note)}
+                            color={(highlightKeys && note in highlightKeys && highlightKeys[note]) 
+                                || STAFF_NOTE_COLORS.GRAY}
+                        />
                     </div>
                 ))
             }

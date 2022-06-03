@@ -1,3 +1,5 @@
+import { Key } from "../types/piano"
+
 export const KEYS = [
     'A0', 'A#0', 'B0',
     'C1', 'C#1', 'D1', 'D#1', 'E1', 'F1', 'F#1', 'G1', 'G#1', 'A1', 'A#1', 'B1',
@@ -11,3 +13,44 @@ export const KEYS = [
 ] as const
 
 export const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B',] as const
+
+export const CLEFS = {
+    TREBLE: 'treble',
+    BASS: 'bass',
+} as const
+
+export const CLEF_INTERVALS = {
+    [CLEFS.BASS]: ['A0', 'C4'],
+    [CLEFS.TREBLE]: ['C4', 'C8'],
+} as const
+
+export const POSITIONS = {
+    SPACE: 'space',
+    LINE: 'line',
+    LEDGER_LINE: 'ledgerLine'
+} as const
+
+export const NOTES_BY_POSITION = {
+    [POSITIONS.SPACE]: [
+        'A0', 'C1', 'E1', 'G1', 'B1', 'D2', 'F2', 'A2', 'C3', 'E3', 'G3', 'B3', 'D4', 'F4', 'A4', 'C5',
+        'E5', 'G5', 'B5', 'D6', 'F6', 'A6', 'C7', 'E7', 'G7', 'B7',
+    ] as Key[],
+    [POSITIONS.LINE]: [
+        'G2', 'H2', 'D3', 'F3', 'A3', 'E4', 'G4', 'B4', 'D5', 'F5',
+    ] as Key[],
+    [POSITIONS.LEDGER_LINE]: [
+        'B0', 'D1', 'F1', 'A1', 'C2', 'E2', 'C4', 'A5', 'C6', 'E6', 'G6', 'B6', 'D7', 'F7', 'A7', 'C8',
+    ] as Key[],
+} as const
+
+export const COLORS = {
+    BLACK: 'black',
+    BLUE: 'blue',
+    GRAY: 'gray',
+    GREEN: 'green',
+    RED: 'red',
+} as const
+
+export const STAFF_NOTE_COLORS = (({ BLACK, GRAY, GREEN, RED }) => ({ BLACK, GRAY, GREEN, RED }))(COLORS)
+
+export const PIANO_KEY_COLORS = (({ BLUE, GREEN, RED }) => ({ BLUE, GREEN, RED }))(COLORS)

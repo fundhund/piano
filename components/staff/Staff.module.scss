@@ -1,6 +1,8 @@
 .staff {
     display: flex;
     flex-direction: column;
+    width: 100px;
+    margin: 0 auto;
 
     .note {
         display: flex;
@@ -17,10 +19,6 @@
             position: relative;
             top: -50%;
         }
-
-        &:hover {
-            background-color: lightblue;
-        }
     }
 
     .line {
@@ -35,10 +33,6 @@
         & > div {
             position: relative;
             top: calc(-50% - 3px);
-        }
-
-        &:hover {
-            background-color: lightblue;
         }
     }
 

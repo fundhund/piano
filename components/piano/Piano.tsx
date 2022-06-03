@@ -1,12 +1,10 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
-import { Key } from '../../types/piano'
+import { HighlightKeys, Key } from '../../types/piano'
 import { joinClassNames } from '../../utils/componentHelper'
 import { KEYS } from '../../utils/constants'
 import { getKeyFromMidiCode, MIDI_COMMANDS } from '../../utils/midiHelper'
 import { getKeyColor, getNoteFromKey } from '../../utils/noteHelper'
 import styles from './Piano.module.scss'
-
-export type HighlightKeys = {[key: string]: 'green' | 'red' | 'blue'}
 
 export type PianoProps = {
     showNotes?: boolean

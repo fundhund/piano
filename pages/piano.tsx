@@ -32,7 +32,6 @@ const PianoPage: NextPage = () => {
             onWheel={e => {
                 currentKeys[0] && setCurrentKeys([KEYS[KEYS.findIndex(key => key === currentKeys[0]) - e.deltaY / 100]])
             }}
-            style={{height: '100%'}}
         >
             <Staff clef="treble" />
             <Piano 

@@ -14,5 +14,9 @@
     text-align: center;
     display: flex;
     flex-direction: column;
+
+    & > div {
+      min-height: 100%;
+    } // TODO: fill height
   }
 }
