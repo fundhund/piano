@@ -1,8 +1,8 @@
 import { NextPage } from 'next'
 import React, { useEffect, useRef, useState } from 'react'
 import NoteDisplay, { NoteDisplayColor, NOTE_DISPLAY_COLORS } from '../components/noteDisplay/NoteDisplay'
-import Piano, { HighlightKeys } from '../components/piano/Piano'
-import { Key, Note } from '../types/piano'
+import Piano from '../components/piano/Piano'
+import { HighlightKeys, Key, Note } from '../types/piano'
 import { getRandomKey } from '../utils/noteHelper'
 
 const PianoPage: NextPage = () => {

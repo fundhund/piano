@@ -6,21 +6,35 @@ $size_hole: 6px;
     height: $size_note;
     width: $size_note * 1.5;
     z-index: 2;
+
+    &.sharp::after {
+        content: '#';
+        font-size: 1.2em;
+        font-weight: bold;
+        font-style: italic;
+        position: relative;
+        left: -16px;
+        bottom: 16px;
+    }
     
     &.black {
         background-color: black;
+        color: black;
     }
 
     &.green {
-        background: green;
+        background-color: green;
+        color: green;
     }
 
     &.red {
-        background: red !important;
+        background-color: red;
+        color: red;
     }
 
     &.gray {
-        background: gray;
+        background-color: gray;
+        color: gray;
     }
 
     & > div {

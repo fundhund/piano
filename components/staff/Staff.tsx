@@ -1,9 +1,9 @@
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Key } from '../../types/piano'
-import { Clef, HighlightKeys, Position } from '../../types/staff'
-import { getReversedArray, getSubArray } from '../../utils/arrayHelper'
+import { Clef, HighlightKeys } from '../../types/staff'
 import { joinClassNames } from '../../utils/componentHelper'
-import { CLEF_INTERVALS, KEYS, NOTES_BY_POSITION, POSITIONS, STAFF_NOTE_COLORS } from '../../utils/constants'
+import { STAFF_NOTE_COLORS } from '../../utils/constants'
+import { getAllNotesInClef, getPosition, getStaffNotes, isSharp, withoutSharp } from '../../utils/staffHelper'
 import styles from './Staff.module.scss'
 import WholeNote from './WholeNote'
 
@@ -13,16 +13,6 @@ type StaffProps = {
     highlightKeys?: HighlightKeys
 }
 
-const getStaffNotes = (clef: Clef) =>
-    getReversedArray(
-        getSubArray(
-            [...KEYS], CLEF_INTERVALS[clef] as [Key, Key]
-        )
-    ).filter(note => !note.includes('#'))
-
-const getPosition = (key: Key) =>
-    Object.values(POSITIONS).find((position: Position) => NOTES_BY_POSITION[position].includes(key))
-
 const getPositionStyle = (key: Key) => styles[String(getPosition(key))]
 
 const Staff: FC<StaffProps> = ({
@@ -30,6 +20,7 @@ const Staff: FC<StaffProps> = ({
     isInteractive = false,
     highlightKeys,
 }) => {
+    const allNotesInClef = getAllNotesInClef(clef)
     const staffNotes = getStaffNotes(clef)
 
     const [focussedNote, setFocussedNote] = useState<Key | null>(null)
@@ -42,18 +33,23 @@ const Staff: FC<StaffProps> = ({
         }
         : null
 
+    useEffect(() => {console.log({focussedNote, selectedNote})}, [focussedNote])
+
     return (
         <div
             className={styles.staff}
             onWheel={e => {
                 if (focussedNote && !selectedNote) {
-                    const currentIndex = staffNotes.findIndex(note => note === focussedNote)
+                    const currentIndex = allNotesInClef.findIndex(note => note === focussedNote)
                     const newIndex = currentIndex + e.deltaY / 100
 
-                    if (newIndex >= 0 && newIndex < staffNotes.length) {
-                        setFocussedNote(staffNotes[newIndex])
+                    if (newIndex >= 0 && newIndex < allNotesInClef.length) {
+                        setFocussedNote(allNotesInClef[newIndex])
                     }
                 }
+            }}
+            onClick={() => {
+                setSelectedNote(focussedNote)
             }}
         >
             { staffNotes
@@ -64,9 +60,16 @@ const Staff: FC<StaffProps> = ({
                         { ...getMouseEvents(note) }
                     >
                         <WholeNote
-                            isDisplayed={[selectedNote, focussedNote].includes(note)}
+                            isDisplayed={selectedNote
+                                ? withoutSharp(selectedNote) === note
+                                : withoutSharp(focussedNote) === note
+                            }
                             color={(highlightKeys && note in highlightKeys && highlightKeys[note]) 
-                                || STAFF_NOTE_COLORS.GRAY}
+                                || note === withoutSharp(selectedNote)
+                                    ?  STAFF_NOTE_COLORS.BLACK
+                                    :  STAFF_NOTE_COLORS.GRAY
+                            }
+                            isSharp={isSharp(focussedNote) || isSharp(selectedNote)}
                         />
                     </div>
                 ))
